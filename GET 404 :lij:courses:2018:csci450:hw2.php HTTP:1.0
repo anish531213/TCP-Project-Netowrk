@@ -1,0 +1,24 @@
+GET /lij/courses/2018/csci450/hw2.php HTTP/1.0
+Host: hucs.dynu.net
+Howard-Id: @02778744
+name:Anish
+age:20
+
+
+
+GET /found HTTP/1.0
+Host: www2.howard.edu
+
+
+mail from: anish531213@outlook.com
+rcpt to: anish531213@gmail.com
+
+data
+Subject: My Telnet Test Email
+
+Hello,
+
+This is an email sent by using the telnet command.
+
+Your friend,
+Me
