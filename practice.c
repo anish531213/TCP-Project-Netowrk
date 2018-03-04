@@ -2,19 +2,53 @@
 #include <stdlib.h>
 
 //00101100 ascii ','
+void convertTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
+
+	unsigned char buffer[500];
+
+	fprintf(fp, "%c", type);
+
+	// Logic to convert type 0 to type 1
+	if (type == 0) {
+		char snum[3];
+		
+		sprintf(snum, "%d", amount);
+
+		fprintf(fp, "%s", snum);
+		//printf("%s\n", snum);
+		char nums[amount][5];
+		for (int i=0; i<amount; i++) {
+			sprintf(nums[i], "%d", numbers[i]);
+			fprintf(fp, "%s,", nums[i]);
+		}
+		//fprintf(fp, "\n");
+
+	}
+	else if (type == 1) {
+
+
+	}
+}
+
+
 
 int main()
 
 {
+
 	unsigned char buffer[1];
 
 	int data_array[500];
 	int count;
 
-	int type;
+	FILE *fp;
+	//int myInt = 5;
+	fp = fopen("Output.dms", "wb");
+
+	unsigned char type;
 	FILE *ptr;
 	// struct record myRecord;
-	ptr=fopen("practice_project_test_file_1.dms","rb");
+	ptr=fopen("practice_project_test_file_2.dms","rb");
 
 	if (!ptr) { 
 		printf("Unable to open file!");     
@@ -28,15 +62,16 @@ int main()
 		// Saving the file buffer into data array
 		data_array[count] = buffer[0];
 		count += 1;
-		printf("%u ", buffer[0]);
+		//printf("%u ", buffer[0]);
 	}
 
-	printf("\n");
+	//printf("\n");
 
 	int i=0;
 	int amount;
 	// Default no type is 5
 	type = 5;
+
 	while (i < count) {
 
 		// if no type, assigns type 0 or 1
@@ -47,22 +82,35 @@ int main()
 		// if type = 0
 		} else if (type == 0) {
 			printf("\nType 0 ");
+
 			amount = data_array[i];
 			printf("Amount: %d, ", amount);
+			// number array for storing numbers
+			int numbers[amount];
 			i += 1;
 			for (int j=0; j<amount; j++) {
 				// Concatinating two single byte data
 				int result = (data_array[i] << 8) | data_array[i+1];
 				printf("Number %d: %d, ", j, result);
+				numbers[j] = result;
 				i += 2;
 			}
+
+			// freeing created memory
+
+			convertTypes(fp, type, amount, numbers);
+
 			type = 5;
 
 		// if type == 1
 		} else if (type == 1) {
 			printf("\nType 1 ");
+			//char amount[3];
+
 			amount = 100*(data_array[i]-48) + 10*(data_array[i+1]-48) + (data_array[i+2]-48);
 			printf("Amount: %d, ", amount);
+			// number arary for storing numbers
+			int numbers[amount];
 			i += 3;
 			for (int j=0; j<amount; j++) {
 				int result = 0;
@@ -75,7 +123,12 @@ int main()
 					i += 1;
 				} 
 				printf("Number %d: %d, ", j, result);
+				numbers[j] = result;
 			}
+
+
+			convertTypes(fp, type, amount, numbers);
+
 			type = 5;
 			//return 0;
 		}
