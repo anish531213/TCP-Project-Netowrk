@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 //00101100 ascii ','
 void convertTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
@@ -11,10 +13,12 @@ void convertTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
 	// Logic to convert type 0 to type 1
 	if (type == 0) {
 		char snum[3];
+		char s;
 		
-		sprintf(snum, "%d", amount);
-
-		fprintf(fp, "%s", snum);
+		for (int i=2; i>=0; i--) {
+			s = amount/pow(10, i)+'0';
+			fprintf(fp, "%c", s);
+		}
 		//printf("%s\n", snum);
 		char nums[amount][5];
 		for (int i=0; i<amount; i++) {
