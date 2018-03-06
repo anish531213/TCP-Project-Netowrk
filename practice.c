@@ -4,34 +4,48 @@
 #include <math.h>
 
 //00101100 ascii ','
-void convertTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
+void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
 
 	unsigned char buffer[500];
 
-	fprintf(fp, "%c", type);
+	fprintf(fp, "%c", type+1);
 
+	char snum[3];
+	char s;
+	
+	// print to file in ascii
+	for (int i=2; i>=0; i--) {
+		s = amount/pow(10, i)+'0';
+		fprintf(fp, "%c", s);
+	}
+	//printf("%s\n", snum);
+	char nums[amount][5];
+	for (int i=0; i<amount; i++) {
+		sprintf(nums[i], "%d", numbers[i]);
+		fprintf(fp, "%s,", nums[i]);
+	}
+	//fprintf(fp, "\n");
+
+	
+}
+
+void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {	
+	// Wrting type character
+	fprintf(fp, "%c", type-1);
+
+	// Using fwrite to write integer byte
+	fwrite(&amount, 1, 1, fp);
+
+	// Introducing flip_num array to address byte flip issue
+	int flip_num[amount];
+
+	for (int i=0; i<amount; i++) {
+		//fprintf(fp, "%X", numbers[i]);
+		flip_num[i] = (numbers[i]>>8) | (numbers[i]<<8);
+		fwrite(&flip_num[i] , 2, 1, fp);
+	}
 	// Logic to convert type 0 to type 1
-	if (type == 0) {
-		char snum[3];
-		char s;
-		
-		for (int i=2; i>=0; i--) {
-			s = amount/pow(10, i)+'0';
-			fprintf(fp, "%c", s);
-		}
-		//printf("%s\n", snum);
-		char nums[amount][5];
-		for (int i=0; i<amount; i++) {
-			sprintf(nums[i], "%d", numbers[i]);
-			fprintf(fp, "%s,", nums[i]);
-		}
-		//fprintf(fp, "\n");
-
-	}
-	else if (type == 1) {
-
-
-	}
+	//fprintf(fp, "\n");
 }
 
 
@@ -102,7 +116,7 @@ int main()
 
 			// freeing created memory
 
-			convertTypes(fp, type, amount, numbers);
+			convertFirstTypes(fp, type, amount, numbers);
 
 			type = 5;
 
@@ -131,7 +145,7 @@ int main()
 			}
 
 
-			convertTypes(fp, type, amount, numbers);
+			convertSecondTypes(fp, type, amount, numbers);
 
 			type = 5;
 			//return 0;
