@@ -50,7 +50,7 @@ ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
 
     *buffer = 0;
 
-    printf("%sAnish\n", vptr);
+    printf("%s", vptr);
     return n;
 }
 
