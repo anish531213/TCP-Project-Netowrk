@@ -6,25 +6,27 @@
 //00101100 ascii ','
 void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
 
-	unsigned char buffer[500];
-
+	// Printing type
 	fprintf(fp, "%c", type+1);
 
 	char snum[3];
 	char s;
 	
-	// print to file in ascii
+	// print amount to file in aciia
 	for (int i=2; i>=0; i--) {
+		// Making amount as 3 byte ascii
 		s = amount/pow(10, i)+'0';
 		fprintf(fp, "%c", s);
 	}
-	//printf("%s\n", snum);
-	char nums[amount][5];
-	for (int i=0; i<amount; i++) {
-		sprintf(nums[i], "%d", numbers[i]);
-		fprintf(fp, "%s,", nums[i]);
+
+	// directly printing to a file as string
+	for (int i=0; i<amount-1; i++) {
+		//sprintf(nums[i], "%d", numbers[i]);
+		fprintf(fp, "%d,", numbers[i]);
 	}
-	//fprintf(fp, "\n");
+	// Printing end number without comma
+	fprintf(fp, "%d", numbers[amount-1]);
+	
 
 	
 }
@@ -66,7 +68,7 @@ int main()
 	unsigned char type;
 	FILE *ptr;
 	// struct record myRecord;
-	ptr=fopen("practice_project_test_file_2.dms","rb");
+	ptr=fopen("practice_project_test_file_1.dms","rb");
 
 	if (!ptr) { 
 		printf("Unable to open file!");     
@@ -114,7 +116,6 @@ int main()
 				i += 2;
 			}
 
-			// freeing created memory
 
 			convertFirstTypes(fp, type, amount, numbers);
 
@@ -154,23 +155,7 @@ int main()
 
 	}
 
-
-
-	//printf("\n");
-	// for (count=1; count <= 10; count++) { 
-	/*
-	fread(&buffer,sizeof(buffer),1,ptr);
-	int i = 0;  
-
-	while (buffer[i] != '\0') {
-		printf("%u ", buffer[i]);	
-		i+= 1;
-	}
-
-	for(int i = 0; i<30; i++)
-		printf("%u ", buffer[i]);
-	*/	 
-
+	fclose(fp);
 	fclose(ptr);
 	return 0;
 }
