@@ -94,10 +94,12 @@ int main(int argc, char *argv[]) {
 	/*  Wait for a connection, then accept() it  */
 
 	if ( (conn_s = accept(list_s, NULL, NULL) ) < 0 ) {
+        //printf("Connection accepted");
 	    fprintf(stderr, "ECHOSERV: Error calling accept()\n");
 	    exit(EXIT_FAILURE);
 	}
 
+    //printf("Anish%s\n");
 
 	/*  Retrieve an input line from the connected socket
 	    then simply write it back to the same socket.     */
