@@ -89,7 +89,7 @@ void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[])
 
 /*  Convert function to convert types  */
 
-void convert(char* file_name, char* char_type, int* data_array, int count, int start) {
+int convert(char* file_name, char* char_type, int* data_array, int count, int start) {
 
 	FILE *fp;
 	//int myInt = 5;
@@ -182,6 +182,7 @@ void convert(char* file_name, char* char_type, int* data_array, int count, int s
 
 	fclose(fp);
 
+	return 1;
 
 }
 

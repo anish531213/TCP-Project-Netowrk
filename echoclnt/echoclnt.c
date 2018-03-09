@@ -123,40 +123,6 @@ int main(int argc, char *argv[]) {
 
     handleConnections(conn_s, type, read_file, server_file);
 
-    /*
-
-    FILE *fptr;
-
-    printf("Reading for the file\n");
-
-    if ((fptr = fopen("../Output.dms", "rb")) == NULL) {
-        error("File not found..");
-    } 
-
-    else {
-        char *fileContent = Readfile("../Output.dms");
-
-        if (fileContent) {
-            char send[strlen(fileContent)];
-            fileContent[strlen(fileContent) - 1] = '\0';
-            int file_size = strlen(fileContent);
-            sprintf(send, "%d", file_size);
-            strcat(send, "\n");
-            strcat(send, fileContent);
-
-            printf("%s\n", send);
-
-            write(conn_s, send, strlen(send));
-        }
-    }
-
-
-    printf("File sent to server");
-
-    */
-
-    /*  Output echoed string  */
-
     //printf("Echo response: %s\n", buffer);
 
     return EXIT_SUCCESS;
@@ -240,81 +206,6 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
 }
 
-
-/*
-
-char* Readfile(char* filename) {
-    char* buffer = NULL;
-    int filesize, readsize;
-
-    FILE *fp = fopen(filename, "rb");
-
-    if (fp) {
-        fseek(fp, 0, SEEK_END);        // pointing to the end of the file to calculate total byte size
-        filesize = ftell(fp);
-        rewind(fp);                     // Restoring the pointer to original location
-
-
-        // Allocating buffer string for file
-        buffer = (char*) malloc(sizeof(char) * (filesize + 1) );
-
-        readsize = fread(buffer, sizeof(char), filesize, fp);
-
-        if (filesize != readsize) {
-            // Something went wrong
-            printf("Something is wrong while reading.\n");
-            free(buffer);
-            buffer = NULL;
-        }
-
-        fclose(fp);
-    }
- 
-    return buffer;
-}
-
-
-void handleConnections(int conn_s) {
-    int n;
-    char file_buffer[MAX_LINE];
-    char new_buff[MAX_LINE-1];
-    char send_buff[MAX_LINE-1];
-    int size;
-    char fsize[2];
-    FILE *fptr;                             // Declaring a file pointer
-
-
-    //strcpy(file_buffer, "../Output.txt");
-
-    //if ( access(file_buffer, F_OK) != -1) {   // Checks if the file is present 
-
-    if( (fptr = fopen("../Output.txt", "rb")) > 0) {      // Opens the file for binary read
-
-        fseek(fptr, 0, SEEK_END);        // pointing to the end of the file to calculate total byte size
-        size = ftell(fptr);
-        rewind(fptr);                     // Restoring the pointer to original location
-
-        sprintf(send_buff, "%d", size);     
-        strcat(send_buff, "\n");
-
-        // while(!feof(fptr))
-        // {
-        fread(new_buff, MAX_LINE, 1, fptr); // Reading the file and saving into new_buff
-        strcat(send_buff, new_buff);        // Concatenating the file size and file data in send_buff
-        // }
-        
-
-    } else {
-        exit(EXIT_FAILURE);                   // Sending not found on file not found case
-    }
-
-    n = write(conn_s, send_buff, strlen(send_buff));    // Writing the file data buffer into the socket
-
-    if (n < 0) error("ERROR writing to socket");
-
-}
-
-*/
 
 
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort, char **read_file, char** type, char** server_file) {

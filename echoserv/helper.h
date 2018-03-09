@@ -27,7 +27,7 @@
 
 /*  Function declarations  */
 
-void convert(char* file_name, char* char_type, int* data_array, int count, int start);
+int convert(char* file_name, char* char_type, int* data_array, int count, int start);
 
 
 

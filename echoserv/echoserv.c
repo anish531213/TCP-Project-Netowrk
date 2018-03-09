@@ -29,7 +29,7 @@
 
 /* Function Decleration */
 
-void handleConnection(int conn_s);
+int handleConnection(int conn_s);
 
 
 int main(int argc, char *argv[]) {
@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
     struct    sockaddr_in servaddr;  /*  socket address structure  */
     char      buffer[MAX_LINE];      /*  character buffer          */
     char     *endptr;                /*  for strtol()              */
+
+    int       status;                /*  Status code 0 or 1        */
 
 
     /*  Get port number from the command line, and
@@ -104,15 +106,10 @@ int main(int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
-    //printf("Anish%s\n");
 
-	/*  Retrieve an input line from the connected socket
-	    then simply write it back to the same socket.     */
+    /*  Connection Haldler for reading from client  */
 
-	// Readline(conn_s, buffer, MAX_LINE-1);
-
-
-    handleConnection(conn_s);
+    status = handleConnection(conn_s);
 	// Writeline(conn_s, buffer, strlen(buffer));
 
 
@@ -128,57 +125,62 @@ int main(int argc, char *argv[]) {
 }
 
 
-void handleConnection(int conn_s) {
+int handleConnection(int conn_s) {
 
-    int count;
-    int type_count;
-    int file_name_count;
-    int buffer[MAX_LINE];
-    int i;
+    int count;                          /*  Toatal size of buffer     */
+    int type_count;                     /*  Size for type variable    */
+    int file_name_count;                /*  Length of file name       */
+    int buffer[MAX_LINE];               /*  Buffer for reading fron socket   */
+    int i;                              /*  Looping variable i        */
 
-    int nex;
+    int nex;                            /*  Counter for Buffer        */
+    int error_status;                   /*  Error status              */
 
-    read(conn_s, &buffer, sizeof(int)*MAX_LINE);
+
+    /*  Reading fron the socket into buffer   */
+    read(conn_s, &buffer, sizeof(int)*MAX_LINE); 
+
+    /*  Length of buffer  */
     count = buffer[0];
 
-    nex = 1;
+    nex = 1;                            // Starting buffer location
 
-    type_count = buffer[nex];
-    nex += 1;
+    type_count = buffer[nex];           // Getting size of types
+    nex += 1;                           // Incrementing buffer location
 
-    char type[type_count+1];
-    for (i=0; i<type_count; i++) {
+    /*  Reading type from buffer  */
+    char type[type_count+1];            
+    for (i=0; i<type_count; i++) {      
         type[i] = (char) buffer[i+nex];
     }
-    type[type_count+1] = '\0';
-    nex += type_count;
+    type[type_count+1] = '\0';          // Terminating with null to make string
+    nex += type_count;                  // Incrementing buffer location
 
 
-    file_name_count = buffer[nex];
-    nex += 1;
+    file_name_count = buffer[nex];      // Getting size of filename
+    nex += 1;                           // Incrementing buffer location
 
+    /*  Reading filename from buffer  */
     char file_name[file_name_count+1];
     for (i=0; i<file_name_count; i++) {
         file_name[i] = (char) buffer[i+nex];
     }
-    file_name[file_name_count+1] = '\0';
-    nex += file_name_count;
+    file_name[file_name_count+1] = '\0';// Terminating with null to make string
+    nex += file_name_count;             // Incrementing buffer location
 
 
-    buffer[count] = '\0';
+    buffer[count] = '\0';               // Terminating the whole buffer for conversion
 
-    convert(file_name, type, buffer, count, nex);
-    //printf("%s\n", type);
-    // printf("%s\n", file_name);
+    /*  Sending file to convert  */
+    
+    error_status = convert(file_name, type, buffer, count, nex);
 
-    for (i=nex; i<count; i++) {
-        printf("%d\n", buffer[i]);
-    }
-
+    return error_status;
 }
 
+/*  Error msg function that prints errors  */
 
-void error(char *msg)                           // Error msg function that prints errors
+void error(char *msg)               
 {
     perror(msg);
     exit(1);
