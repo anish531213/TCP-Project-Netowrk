@@ -165,13 +165,16 @@ void handleConnection(int conn_s) {
     nex += file_name_count;
 
 
+    buffer[count] = '\0';
+
     convert(file_name, type, buffer, count, nex);
-    // printf("%s\n", type);
+    //printf("%s\n", type);
     // printf("%s\n", file_name);
 
-    // for (i=nex; i<count; i++) {
-    //     printf("%d\n", buffer[i]);
-    // }
+    for (i=nex; i<count; i++) {
+        printf("%d\n", buffer[i]);
+    }
+
 }
 
 

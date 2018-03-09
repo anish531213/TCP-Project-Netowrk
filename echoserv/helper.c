@@ -28,7 +28,14 @@
 void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
 
 	// Printing type
-	fprintf(fp, "%c", type+1);
+	if (type == 1) {
+		//printf("Type0\n");
+		fprintf(fp, "%c", type);
+	} else {
+		//printf("Type1\n");
+		fprintf(fp, "%c", type+1);
+	}
+	
 
 	char snum[3];
 	char s;
@@ -56,7 +63,13 @@ void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) 
 
 void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {	
 	// Wrting type character
-	fprintf(fp, "%c", type-1);
+	if (type == 0) {
+		//printf("Type1\n");
+		fprintf(fp, "%c", type);
+	} else {
+		//printf("Type0\n");
+		fprintf(fp, "%c", type-1);
+	}
 
 	// Using fwrite to write integer byte
 	fwrite(&amount, 1, 1, fp);
@@ -100,7 +113,7 @@ void convert(char* file_name, char* char_type, int* data_array, int count, int s
 
 		// if type = 0
 		} else if (type == 0) {
-			printf("\nType 0 ");
+			printf("Type 0 ");
 
 			amount = data_array[i];
 			printf("Amount: %d, ", amount);
@@ -115,9 +128,16 @@ void convert(char* file_name, char* char_type, int* data_array, int count, int s
 				i += 2;
 			}
 
+			printf("\n");
+			
+			// Converting the ints to the respective type
+			if (main_type == 3 || main_type == 1) {
+				convertFirstTypes(fp, type, amount, numbers);
+			} else {
+				convertSecondTypes(fp, type, amount, numbers);
+			}
 
-			convertFirstTypes(fp, type, amount, numbers);
-
+			//convertFirstTypes(fp, type, amount, numbers);
 			type = 5;
 
 		// if type == 1
@@ -132,7 +152,7 @@ void convert(char* file_name, char* char_type, int* data_array, int count, int s
 			i += 3;
 			for (int j=0; j<amount; j++) {
 				int result = 0;
-				while (data_array[i] != 0 && data_array[i] != 1) {
+				while (data_array[i] != 0 && data_array[i] != 1  && data_array[i] != '\0') {
 					if (data_array[i] == 44) {
 						i += 1;
 						break;
@@ -144,8 +164,14 @@ void convert(char* file_name, char* char_type, int* data_array, int count, int s
 				numbers[j] = result;
 			}
 
+			printf("\n");
 
-			convertSecondTypes(fp, type, amount, numbers);
+			if (main_type == 3 || main_type == 2) {
+				convertSecondTypes(fp, type, amount, numbers);
+			} else {
+				convertFirstTypes(fp, type, amount, numbers);
+			}
+			//convertSecondTypes(fp, type, amount, numbers);
 
 			type = 5;
 			//return 0;
