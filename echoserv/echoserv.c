@@ -27,6 +27,11 @@
 #define MAX_LINE           (1000)
 
 
+/* Function Decleration */
+
+void handleConnection(int conn_s);
+
+
 int main(int argc, char *argv[]) {
     int       list_s;                /*  listening socket          */
     int       conn_s;                /*  connection socket         */
@@ -104,8 +109,11 @@ int main(int argc, char *argv[]) {
 	/*  Retrieve an input line from the connected socket
 	    then simply write it back to the same socket.     */
 
-	Readline(conn_s, buffer, MAX_LINE-1);
-	Writeline(conn_s, buffer, strlen(buffer));
+	// Readline(conn_s, buffer, MAX_LINE-1);
+
+
+    handleConnection(conn_s);
+	// Writeline(conn_s, buffer, strlen(buffer));
 
 
 	/*  Close the connected socket  */
@@ -115,6 +123,36 @@ int main(int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
-    exit(0);
+    //exit(0);
     }
 }
+
+
+void handleConnection(int conn_s) {
+
+    int* count;
+    int buffer[MAX_LINE];
+
+
+    read(conn_s, &buffer, sizeof(int)*MAX_LINE);
+
+
+    //printf("%d\n", buffer[0]);
+
+    for (int i=0; i<buffer[0]; i++) {
+        printf("%d\n", buffer[i]);
+    }
+}
+
+
+
+void readFile(int conn_s) {
+    
+}
+
+void error(char *msg)                           // Error msg function that prints errors
+{
+    perror(msg);
+    exit(1);
+}
+
