@@ -29,9 +29,9 @@
 
 /*  Function declarations  */
 
-int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort);
+int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort, char **read_file, char** type, char** server_file);
 //void handleConnections(int conn_s);
-void handleConnections(int conn_s);
+void handleConnections(int conn_s, char* type, char* read_file, char* server_file);
 //char* Readfile(char* filename);
 void error(char *msg); 
 
@@ -49,10 +49,23 @@ int main(int argc, char *argv[]) {
     char     *endptr;                /*  for strtol()              */
 
 
+
+    char     *type;                  /*  Holds type variable       */
+    char     *read_file;             /*  file to read by client    */
+    char     *server_file;           /*  file name to be saved at server  */
+
+
+
     /*  Get command line arguments  */
 
-    ParseCmdLine(argc, argv, &szAddress, &szPort);
+    ParseCmdLine(argc, argv, &szAddress, &szPort, &read_file, &type, &server_file);
 
+
+    /*  Error if type is not ok  */
+
+    if (strstr("0123", type) == NULL) {
+        error("Type variable is not correct. Please use type 0, 1, 2 or 3");
+    }
 
     /*  Set the remote port  */
 
@@ -108,7 +121,7 @@ int main(int argc, char *argv[]) {
     //Readline(conn_s, buffer, MAX_LINE-1);
 
 
-    handleConnections(conn_s);
+    handleConnections(conn_s, type, read_file, server_file);
 
     /*
 
@@ -150,7 +163,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-void handleConnections(int conn_s) {
+void handleConnections(int conn_s, char* type, char* read_file, char* server_file) {
 
     unsigned char buffer[1];
 
@@ -159,7 +172,7 @@ void handleConnections(int conn_s) {
 
     FILE *ptr;
 
-    ptr=fopen("../practice_project_test_file_1.dms","rb");
+    ptr=fopen(read_file,"rb");
 
     if (!ptr) { 
         error("Unable to open file!");     
@@ -275,24 +288,32 @@ void handleConnections(int conn_s) {
 */
 
 
-int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
+int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort, char **read_file, char** type, char** server_file) {
 
     int n = 1;
 
-    while ( n < argc ) {
-	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
-	    *szAddress = argv[++n];
-	}
-	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
-	    *szPort = argv[++n];
-	}
-	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
-	    printf("Usage:\n\n");
-	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
-	    exit(EXIT_SUCCESS);
-	}
-	++n;
-    }
+
+    // Setting address and port from command line argument
+    *szAddress = argv[1];
+    *szPort = argv[2];
+    *read_file = argv[3];
+    *type = argv[4];
+    *server_file = argv[5];
+
+ //    while ( n < argc ) {
+	// if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
+	//     *szAddress = argv[++n];
+	// }
+	// else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
+	//     *szPort = argv[++n];
+	// }
+	// else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
+	//     printf("Usage:\n\n");
+	//     printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
+	//     exit(EXIT_SUCCESS);
+	// }
+	// ++n;
+ //    }
 
     return 0;
 }
