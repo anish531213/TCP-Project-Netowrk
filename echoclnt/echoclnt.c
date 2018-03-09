@@ -169,6 +169,32 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     int data_array[MAX_LINE];
     int count = 1;
+    int i;
+    //int header_count = 0;
+
+
+    int type_size = strlen(type);
+    
+    int server_file_size = strlen(server_file);
+    
+    // copying type_size and server_file_size in dataarray
+    
+    data_array[count] = type_size;
+    count++;
+    for (i=0; i<type_size; i++) {
+        data_array[count] = type[i];
+        count++;
+    }
+       
+
+    data_array[count] = server_file_size;
+    count++;
+    for (i=0; i<server_file_size; i++) {
+        data_array[count] = server_file[i];
+        count++;
+    }
+        
+
 
     FILE *ptr;
 
