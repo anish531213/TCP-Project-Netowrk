@@ -130,16 +130,45 @@ int main(int argc, char *argv[]) {
 
 void handleConnection(int conn_s) {
 
-    int* count;
+    int count;
+    int type_count;
+    int file_name_count;
     int buffer[MAX_LINE];
+    int i;
 
+    int nex;
 
     read(conn_s, &buffer, sizeof(int)*MAX_LINE);
+    count = buffer[0];
+
+    nex = 1;
+
+    type_count = buffer[nex];
+    nex += 1;
+
+    char type[type_count+1];
+    for (i=0; i<type_count; i++) {
+        type[i] = (char) buffer[i+nex];
+    }
+    type[type_count+1] = '\0';
+    nex += type_count;
 
 
-    //printf("%d\n", buffer[0]);
+    file_name_count = buffer[nex];
+    nex += 1;
 
-    for (int i=0; i<buffer[0]; i++) {
+    char file_name[file_name_count+1];
+    for (i=0; i<file_name_count; i++) {
+        file_name[i] = (char) buffer[i+nex];
+    }
+    file_name[file_name_count+1] = '\0';
+    nex += file_name_count;
+
+
+    printf("%s\n", type);
+    printf("%s\n", file_name);
+
+    for (i=nex; i<count; i++) {
         printf("%d\n", buffer[i]);
     }
 }
