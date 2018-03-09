@@ -165,19 +165,15 @@ void handleConnection(int conn_s) {
     nex += file_name_count;
 
 
-    printf("%s\n", type);
-    printf("%s\n", file_name);
+    convert(file_name, type, buffer, count, nex);
+    // printf("%s\n", type);
+    // printf("%s\n", file_name);
 
-    for (i=nex; i<count; i++) {
-        printf("%d\n", buffer[i]);
-    }
+    // for (i=nex; i<count; i++) {
+    //     printf("%d\n", buffer[i]);
+    // }
 }
 
-
-
-void readFile(int conn_s) {
-    
-}
 
 void error(char *msg)                           // Error msg function that prints errors
 {

@@ -235,6 +235,9 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     printf("Successfully written to socket\n");
 
+
+    fclose(ptr);
+
 }
 
 
