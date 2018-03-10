@@ -24,10 +24,12 @@
 #include <math.h>
 
 
+/* 	Convert Function to convert and print Type 0 format types  */
 
 void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {
 
-	// Printing type
+	/*  Writing type to file according to the client sent type  */
+
 	if (type == 1) {
 		//printf("Type0\n");
 		fprintf(fp, "%c", type);
@@ -36,33 +38,32 @@ void convertFirstTypes(FILE* fp, unsigned char type, int amount, int numbers[]) 
 		fprintf(fp, "%c", type+1);
 	}
 	
-
-	char snum[3];
-	char s;
-
-	int k;
+	char s;												// char declaration
+	int k;												// looping variable declaration
 	
-	// print amount to file in aciia
-	for (k=2; k>=0; k--) {
-		// Making amount as 3 byte ascii
-		s = amount/pow(10, k)+'0';
-		fprintf(fp, "%c", s);
+	/*  print three byte amount to file in aciia  */
+
+	for (k=2; k>=0; k--) {						
+		s = amount/pow(10, k)+'0';						
+		fprintf(fp, "%c", s);							// printing each byte to file
 	}
 
-	// directly printing to a file as string
+	/*  directly printing number to a file as string  */
+
 	for (k=0; k<amount-1; k++) {
-		//sprintf(nums[i], "%d", numbers[i]);
-		fprintf(fp, "%d,", numbers[k]);
+		fprintf(fp, "%d,", numbers[k]);					// Printing number with ',' ascii
 	}
-	// Printing end number without comma
-	fprintf(fp, "%d", numbers[amount-1]);
-	
 
+	fprintf(fp, "%d", numbers[amount-1]);				// Printing end number without ','
 	
 }
 
+/* 	Convert Function to convert and print Type 1 format types  */
+
 void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[]) {	
-	// Wrting type character
+	
+	/*  Writing type to file according to the client sent type  */
+	
 	if (type == 0) {
 		//printf("Type1\n");
 		fprintf(fp, "%c", type);
@@ -71,19 +72,19 @@ void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[])
 		fprintf(fp, "%c", type-1);
 	}
 
-	// Using fwrite to write integer byte
-	fwrite(&amount, 1, 1, fp);
+	fwrite(&amount, 1, 1, fp);							// Using fwrite to write 1 byte of integer
 
-	// Introducing flip_num array to address byte flip issue
+	/*  Introducing flip_num array to address byte flip issue while writing to file  */
+
 	int flip_num[amount];
 
+	/*  Writing 2 bytes for each number after flipping their bytes  */
+
 	for (int k=0; k<amount; k++) {
-		//fprintf(fp, "%X", numbers[i]);
-		flip_num[k] = (numbers[k]>>8) | (numbers[k]<<8);
-		fwrite(&flip_num[k] , 2, 1, fp);
+		flip_num[k] = (numbers[k]>>8) | (numbers[k]<<8);// Flipping bytes
+		fwrite(&flip_num[k] , 2, 1, fp);				// Writing 2 bytes of integer
 	}
-	// Logic to convert type 0 to type 1
-	//fprintf(fp, "\n");
+	
 }
 
 
@@ -91,99 +92,168 @@ void convertSecondTypes(FILE* fp, unsigned char type, int amount, int numbers[])
 
 int convert(char* file_name, char* char_type, int* data_array, int count, int start) {
 
-	FILE *fp;
-	//int myInt = 5;
-	fp = fopen(file_name, "wb");
+	int main_type;									// client type declaration
+	int i;											// position counter declaration
+	int type;										// format type declaration
+	int amount;										// amount declaration
+	FILE *fp;										// File pointer
 
-	int main_type;
+	main_type = atoi(char_type);					// taking integer of type
+	i=start;										// Buffer start position
+	type = 5;										// Default format type
 
-	main_type = atoi(char_type);
+	fp = fopen(file_name, "wb");					// Opening the file in write binary
 
-	int i=start;
-	int amount;
-	// Default no type is 5
-	int type = 5;
+
+	/* 	Checking if the first character of file starts with type format  */
+
+	if (data_array[i] != 0 && data_array[i] != 1) {
+		return error_handler(fp, "First byte format is incorrect!", file_name);
+	}
+
+
+	/* 	Parsing and performing operation on buffer data from client  */
 
 	while (i < count) {
 
-		// if no type, assigns type 0 or 1
-		if (type == 5) {
-			type = data_array[i];
-			i += 1;
+		/*  Operation for no type  */
+		
+		if (type == 5) {							// if no type
+			type = data_array[i];					// gets type from data array					
+			i += 1;									// incrementing buffer position
 
-		// if type = 0
+		/*  Operations for type 0  */
+
 		} else if (type == 0) {
-			printf("Type 0 ");
+			//printf("Type 0 ");
+			amount = data_array[i];					// gets amount
+			printf("%d ", amount);					// printing amount
+			
+			int numbers[amount];					// number array for storing 
+													// numbers1 to numberN
+			i += 1;									// incrementing buffer position
 
-			amount = data_array[i];
-			printf("Amount: %d, ", amount);
-			// number array for storing numbers
-			int numbers[amount];
-			i += 1;
+			/*  Getting N(amount) numbers in a loop  */
+
 			for (int j=0; j<amount; j++) {
 				// Concatinating two single byte data
 				int result = (data_array[i] << 8) | data_array[i+1];
-				printf("Number %d: %d, ", j, result);
-				numbers[j] = result;
-				i += 2;
+				printf("%d,", result);				// printing number
+				numbers[j] = result;				// adding number to number array
+				i += 2;								// incrementing buffer position
 			}
 
-			printf("\n");
+			printf("\n");							// printing new line
 			
-			// Converting the ints to the respective type
-			if (main_type == 3 || main_type == 1) {
+			/**	
+			 *
+			 *	Passing amount and numbers in respective function  
+			 *  	
+			 *	If the client sends type 3 or 1, it converts the data to first type
+			 *	else, it converts the data into second type
+			 *
+			 */
+
+			if (main_type == 3 || main_type == 1) {	
 				convertFirstTypes(fp, type, amount, numbers);
 			} else {
 				convertSecondTypes(fp, type, amount, numbers);
 			}
 
-			//convertFirstTypes(fp, type, amount, numbers);
-			type = 5;
+			type = 5;								// setting type as default
+		
+		/*  Operations for type 1  */
 
-		// if type == 1
 		} else if (type == 1) {
-			printf("\nType 1 ");
+			// printf("\nType 1 ");
 			//char amount[3];
 
+			/*  Getting the three bytes amount which are sent as character  */
+
 			amount = 100*(data_array[i]-48) + 10*(data_array[i+1]-48) + (data_array[i+2]-48);
-			printf("Amount: %d, ", amount);
-			// number arary for storing numbers
-			int numbers[amount];
-			i += 3;
+
+			printf("%d ", amount);					// print amount
+			
+			int numbers[amount];					// number arary for storing numbers
+			i += 3;									// incremnting buffer position
+
+			/*  Getting N(amount) numbers in a loop  */
+			
 			for (int j=0; j<amount; j++) {
 				int result = 0;
+
+				/*  
+					Getting each character of ascii number one by one 
+					until 0, 1 or null char found 	  					
+				*/
+
 				while (data_array[i] != 0 && data_array[i] != 1  && data_array[i] != '\0') {
-					if (data_array[i] == 44) {
-						i += 1;
+
+					if (data_array[i] == 44) {		// If ascii comma is found
+						i += 1;						// incrementing buffer position
 						break;
 					}
-					result = result*10 + (data_array[i]-48);
-					i += 1;
+
+					// Calculating each number from ascii character
+					result = result*10 + (data_array[i]-48); 
+					i += 1;							// incrementing buffer position
+
+					/*  Sending error if result exceed the min integer size  */
+
+					if (result > 65535) {
+						return error_handler(fp, "Invalid Number for type 1!", file_name);
+					}
+
 				} 
-				printf("Number %d: %d, ", j, result);
-				numbers[j] = result;
+
+				printf("%d, ", result);				// printing number
+				numbers[j] = result;				// adding number to number array
 			}
 
-			printf("\n");
+			/*  If ending character found before reading n characters  */
+
+			/**	
+			 *
+			 *	Passing amount and numbers in respective function  
+			 *  	
+			 *	If the client sends type 3 or 2, it converts the data to second type
+			 *	else, it converts the data into first type
+			 *
+			 */
 
 			if (main_type == 3 || main_type == 2) {
 				convertSecondTypes(fp, type, amount, numbers);
 			} else {
 				convertFirstTypes(fp, type, amount, numbers);
 			}
-			//convertSecondTypes(fp, type, amount, numbers);
 
-			type = 5;
-			//return 0;
+			type = 5;								// setting type as default
+
+		/*  If type format is wrong or type is not 0 or 1 or default */
+
+		} else {
+
+			return error_handler(fp, "Type error!", file_name);
+		
 		}
 
 
 	}
 
-	fclose(fp);
+	fclose(fp);										// Closing the file
 
-	return 1;
+	return 1;										// Return success code 1 if no error
 
+}
+
+
+/* 	Error handler function to print error in server  */
+
+int error_handler(FILE *fp, char* message, char* file_name) {
+	printf("%s\n", message);						// Printing the error is server
+	fclose(fp);										// Closing the writing file
+	remove(file_name);								// Removing the writing fike
+	return 0;										// Returns error code
 }
 
 
