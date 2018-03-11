@@ -25,6 +25,7 @@
 /*  Global constants  */
 
 #define MAX_LINE           (1000)
+#define HEADER_LINE        (100)
 
 
 /*  Function declarations  */
@@ -131,7 +132,7 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     unsigned char buffer[1];
 
-    int data_array[MAX_LINE];
+    int data_array[MAX_LINE+HEADER_LINE];
     int count = 1;
     int i;
     //int header_count = 0;
@@ -162,11 +163,27 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     FILE *ptr;
 
-    ptr=fopen(read_file,"rb");
+    ptr=fopen(read_file,"rb");                      // Reading file in binary
+
+    /*  If error in reading file  */
 
     if (!ptr) { 
         error("Unable to open file!");     
     }
+
+    /*  Checking the file length if it doesn't exceed 1000 bytes  */
+
+    fseek(ptr, 0, SEEK_END);
+    int lengthOfFile = ftell(ptr);
+    fclose(ptr);
+
+    /*  Throwing error if filelength exceed 1000 bytes  */
+    
+    if (lengthOfFile > 1000) {
+        error("File length exceed!");
+    }
+
+   
 
     while (fread(&buffer,sizeof(buffer),1,ptr) != 0) {
         // Saving the file buffer into data array
