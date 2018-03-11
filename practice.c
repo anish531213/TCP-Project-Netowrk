@@ -82,10 +82,10 @@ int main()
 		// Saving the file buffer into data array
 		data_array[count] = buffer[0];
 		count += 1;
-		//printf("%u ", buffer[0]);
+		printf("%u ", buffer[0]);
 	}
 
-	//printf("\n");
+	//printf("%d\n", *data_array);
 
 	int i=0;
 	int amount;
@@ -158,4 +158,26 @@ int main()
 	fclose(fp);
 	fclose(ptr);
 	return 0;
+}
+
+int readFile(char* filename) {
+
+	unsigned char buffer[1];
+
+    FILE *ptr;
+    ptr=fopen("practice_project_test_file_1.dms","rb");
+    int data_array[500];
+
+    // keeping count of the bytes
+    int count = 0;
+    // Reading the buffer 1 byte by 1 byte and saving into array
+    while (fread(&buffer,sizeof(buffer),1,ptr) != 0) {
+        // Saving the file buffer into data array
+        data_array[count] = buffer[0];
+        count += 1;
+        //printf("%u ", buffer[0]);
+    }
+
+    return count;
+
 }

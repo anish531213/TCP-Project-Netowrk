@@ -15,8 +15,6 @@
 #include <arpa/inet.h>        /*  inet (3) funtions         */
 #include <unistd.h>           /*  misc. UNIX functions      */
 
-#include "helper.h"           /*  Our own helper functions  */
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -175,7 +173,9 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     fseek(ptr, 0, SEEK_END);
     int lengthOfFile = ftell(ptr);
-    fclose(ptr);
+    rewind(ptr);
+
+    //printf("%d\n", lengthOfFile);
 
     /*  Throwing error if filelength exceed 1000 bytes  */
     
@@ -189,7 +189,6 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
         // Saving the file buffer into data array
         data_array[count] = buffer[0];
         count += 1;
-        //printf("%u ", buffer[0]);
     }
 
         // printf("%d, ", count);
