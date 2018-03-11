@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
     char     *type;                  /*  Holds type variable       */
     char     *read_file;             /*  file to read by client    */
     char     *server_file;           /*  file name to be saved at server  */
+    int      status;                 /*  Holds status of process   */
 
 
 
@@ -115,11 +116,22 @@ int main(int argc, char *argv[]) {
 
 
 
-    //Writeline(conn_s, buffer, strlen(buffer));
-    //Readline(conn_s, buffer, MAX_LINE-1);
 
+    /*  Handling writing file to socket  */
 
     handleConnections(conn_s, type, read_file, server_file);
+
+    /*  Reading integer status from the socket  */
+
+    read(conn_s, &status, sizeof(int));
+
+    /*  Printing message according to server status  */
+
+    if (status == 0) {
+        printf("Format Error\n");
+    } else {
+        printf("Success\n");
+    }
 
     //printf("Echo response: %s\n", buffer);
 
@@ -183,9 +195,9 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
     data_array[0] = count;
 
-    printf("Writing to socket\n");
+    //printf("Writing to socket\n");
 
-    printf("%d, ", count);
+    //printf("%d, ", count);
 
     write(conn_s, &data_array, sizeof(int)*count);
 
@@ -197,7 +209,7 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
     //     write(conn_s, data_array[i], sizeof(int));
     // }
 
-    printf("Successfully written to socket\n");
+    //printf("Successfully written to socket\n");
 
 
     fclose(ptr);

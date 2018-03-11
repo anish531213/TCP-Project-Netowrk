@@ -112,6 +112,12 @@ int main(int argc, char *argv[]) {
     status = handleConnection(conn_s);
 	// Writeline(conn_s, buffer, strlen(buffer));
 
+    // printf("%d\n", status);
+
+    /*  Writes the status(success/failure) to the socket  */
+
+    write(conn_s, &status, sizeof(int));
+
 
 	/*  Close the connected socket  */
 
@@ -134,7 +140,7 @@ int handleConnection(int conn_s) {
     int i;                              /*  Looping variable i        */
 
     int nex;                            /*  Counter for Buffer        */
-    int error_status;                   /*  Error status              */
+    int status;                   /*  Error status              */
 
 
     /*  Reading fron the socket into buffer   */
@@ -173,9 +179,9 @@ int handleConnection(int conn_s) {
 
     /*  Sending file to convert  */
     
-    error_status = convert(file_name, type, buffer, count, nex);
+    status = convert(file_name, type, buffer, count, nex);
 
-    return error_status;
+    return status;
 }
 
 /*  Error msg function that prints errors  */
