@@ -206,9 +206,21 @@ int convert(char* file_name, char* char_type, int* data_array, int count, int st
 
 				} 
 
+				/*  If N numbers are not read until next type or file terminates,
+					Then there is format error for type 1  */
+
+				if ((j<amount-1) && (data_array[i] != 0 
+					|| data_array[i] != 1  || data_array[i] != '\0')) {
+
+					return error_handler(fp, "Type 1 format error!", file_name);
+
+				}
+
 				printf("%d, ", result);				// printing number
 				numbers[j] = result;				// adding number to number array
 			}
+
+			printf("\n");							// printing new line
 
 			/*  If ending character found before reading n characters  */
 

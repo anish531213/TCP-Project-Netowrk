@@ -30,9 +30,7 @@
 /*  Function declarations  */
 
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort, char **read_file, char** type, char** server_file);
-//void handleConnections(int conn_s);
 void handleConnections(int conn_s, char* type, char* read_file, char* server_file);
-//char* Readfile(char* filename);
 void error(char *msg); 
 
 
