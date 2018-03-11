@@ -106,17 +106,7 @@ int main(int argc, char *argv[]) {
 	exit(EXIT_FAILURE);
     }
 
-    /*  Get string to echo from user  */
-
-    // printf("Enter the string to echo: ");
-    // fgets(buffer, MAX_LINE, stdin);
-    
-
-    /*  Send string to echo server, and retrieve response  */
-
-
-
-
+ 
     /*  Handling writing file to socket  */
 
     handleConnections(conn_s, type, read_file, server_file);
@@ -132,8 +122,6 @@ int main(int argc, char *argv[]) {
     } else {
         printf("Success\n");
     }
-
-    //printf("Echo response: %s\n", buffer);
 
     return EXIT_SUCCESS;
 }

@@ -138,7 +138,13 @@ int convert(char* file_name, char* char_type, int* data_array, int count, int st
 			for (int j=0; j<amount; j++) {
 				// Concatinating two single byte data
 				int result = (data_array[i] << 8) | data_array[i+1];
-				printf("%d,", result);				// printing number
+				// print number with ',' or without comma
+				if (j == amount-1) {
+					printf("%d", result);			// printing number
+				} else {
+					printf("%d,", result);			// printing number
+				}
+				
 				numbers[j] = result;				// adding number to number array
 				i += 2;								// incrementing buffer position
 			}
@@ -216,7 +222,13 @@ int convert(char* file_name, char* char_type, int* data_array, int count, int st
 
 				}
 
-				printf("%d, ", result);				// printing number
+				// print number with ',' or without comma
+				if (j == amount-1) {
+					printf("%d", result);			// printing number
+				} else {
+					printf("%d,", result);			// printing number
+				}
+				
 				numbers[j] = result;				// adding number to number array
 			}
 
@@ -248,7 +260,6 @@ int convert(char* file_name, char* char_type, int* data_array, int count, int st
 			return error_handler(fp, "Type error!", file_name);
 		
 		}
-
 
 	}
 
