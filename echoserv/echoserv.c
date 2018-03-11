@@ -121,8 +121,7 @@ int main(int argc, char *argv[]) {
 	    fprintf(stderr, "ECHOSERV: Error calling close()\n");
 	    exit(EXIT_FAILURE);
 	}
-
-    exit(0);
+    //exit(0);
     }
 }
 
