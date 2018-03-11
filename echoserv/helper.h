@@ -220,7 +220,7 @@ int convert(char* file_name, char* char_type, int* data_array, int count, int st
 
 					/*  Sending error if result exceed the min integer size  */
 
-					if (result > 65535) {
+					if (result > 65535 || result < 0) {
 						return error_handler(fp, "Invalid Number for type 1!", file_name);
 					}
 

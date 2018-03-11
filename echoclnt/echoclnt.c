@@ -126,42 +126,43 @@ int main(int argc, char *argv[]) {
 }
 
 
+/*  Handles reading data from file, creating header and sending data to server  */
+
 void handleConnections(int conn_s, char* type, char* read_file, char* server_file) {
 
-    unsigned char buffer[1];
+    unsigned char buffer[1];                        // reading buffer initialized
 
-    int data_array[MAX_LINE+HEADER_LINE];
-    int count = 1;
-    int i;
-    //int header_count = 0;
+    int data_array[MAX_LINE+HEADER_LINE];           // buffer to store data and header
+    int count = 1;                                  // intial buffer position
+    int i;                                          // looping variable
 
-
-    int type_size = strlen(type);
+    int type_size = strlen(type);                   // getting length of type
     
-    int server_file_size = strlen(server_file);
+    int server_file_size = strlen(server_file);     // getting length of server file name
     
-    // copying type_size and server_file_size in dataarray
+
+    /*  Copying type_size and type in dataarray  */
     
     data_array[count] = type_size;
-    count++;
+    count++;                                        // incrementing buffer postion
     for (i=0; i<type_size; i++) {
         data_array[count] = type[i];
         count++;
     }
-       
+
+    /*  Copying file_name size and file_name in dataarray  */
 
     data_array[count] = server_file_size;
-    count++;
+    count++;                                         // incrementing buffer postion
     for (i=0; i<server_file_size; i++) {
         data_array[count] = server_file[i];
         count++;
     }
         
-
+    /*  Reading file given by command line in binary  */
 
     FILE *ptr;
-
-    ptr=fopen(read_file,"rb");                      // Reading file in binary
+    ptr=fopen(read_file,"rb");                    
 
     /*  If error in reading file  */
 
@@ -175,7 +176,6 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
     int lengthOfFile = ftell(ptr);
     rewind(ptr);
 
-    //printf("%d\n", lengthOfFile);
 
     /*  Throwing error if filelength exceed 1000 bytes  */
     
@@ -183,40 +183,24 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
         error("File length exceed!");
     }
 
-   
+   /*  Reading the file 1 byte at a time and saving into data_array as integer  */
 
     while (fread(&buffer,sizeof(buffer),1,ptr) != 0) {
-        // Saving the file buffer into data array
+        /*  Saving the file buffer into data array  */
         data_array[count] = buffer[0];
         count += 1;
     }
 
-        // printf("%d, ", count);
+    /*  Providing total count at beginning of buffer  */
 
-        // for(int i=0; i<count; i++) {
-        //     printf("%d, ", data_array[i]);
-        // }
+    data_array[0] = count;                      
 
-    data_array[0] = count;
+    /*  Writing the header and file data in integer to the socket  */
 
-    //printf("Writing to socket\n");
-
-    //printf("%d, ", count);
-
-    write(conn_s, &data_array, sizeof(int)*count);
+    write(conn_s, &data_array, sizeof(int)*count);  
 
 
-    // for(int i=0; i<count; i++) {
-        
-    //     //printf("%d, ", data_array[i]);
-
-    //     write(conn_s, data_array[i], sizeof(int));
-    // }
-
-    //printf("Successfully written to socket\n");
-
-
-    fclose(ptr);
+    fclose(ptr);                                    // closing the file
 
 }
 
@@ -224,35 +208,53 @@ void handleConnections(int conn_s, char* type, char* read_file, char* server_fil
 
 int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort, char **read_file, char** type, char** server_file) {
 
-    int n = 1;
+    /* If first argument not present */
 
+    if (argv[1] == NULL) {
+        error("Must provide server address");
+    }
 
-    // Setting address and port from command line argument
+    /* If second argument not present */
+
+    if (argv[2] == NULL) {
+        error("Must provide port number");
+    }
+
+    /* If third argument not present */
+
+    if (argv[3] == NULL) {
+        error("Must provide reading file name");
+    }
+
+    /* If fourth argument not present */
+
+    if (argv[4] == NULL) {
+        error("Must provide host name");
+    }
+
+    /* If fifth argument not present */
+  
+    if (argv[5]==NULL) {
+        error("Must provide file_name.");
+    }
+
+    /* 
+        Setting address, port, read_file, type and server_file 
+        from command line argument
+    */
+
     *szAddress = argv[1];
     *szPort = argv[2];
     *read_file = argv[3];
     *type = argv[4];
     *server_file = argv[5];
 
- //    while ( n < argc ) {
-	// if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
-	//     *szAddress = argv[++n];
-	// }
-	// else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
-	//     *szPort = argv[++n];
-	// }
-	// else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
-	//     printf("Usage:\n\n");
-	//     printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
-	//     exit(EXIT_SUCCESS);
-	// }
-	// ++n;
- //    }
-
     return 0;
 }
 
-void error(char *msg)                           // Error msg function that prints errors
+/*  Error msg function that prints errors  */
+
+void error(char *msg)                         
 {
     perror(msg);
     exit(1);

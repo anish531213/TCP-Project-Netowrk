@@ -139,7 +139,9 @@ int handleConnection(int conn_s) {
 
 
     /*  Reading fron the socket into buffer   */
-    read(conn_s, &buffer, sizeof(int)*MAX_LINE); 
+    if ((read(conn_s, &buffer, sizeof(int)*MAX_LINE)) <= 0) {
+        return 0;
+    } 
 
     /*  Length of buffer  */
     count = buffer[0];
