@@ -106,13 +106,9 @@ int main(int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
-
     /*  Connection Haldler for reading from client  */
 
     status = handleConnection(conn_s);
-	// Writeline(conn_s, buffer, strlen(buffer));
-
-    // printf("%d\n", status);
 
     /*  Writes the status(success/failure) to the socket  */
 
@@ -126,7 +122,7 @@ int main(int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
-    //exit(0);
+    exit(0);
     }
 }
 
